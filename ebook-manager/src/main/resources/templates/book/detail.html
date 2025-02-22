@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý giáo trình</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        .image-preview img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Chèn fragment sidebar -->
+<div th:replace="~{base}"></div>
+
+<!-- Nội dung chính -->
+<div class="container" style="margin-left: 250px; padding-top: 56px;">
+    <h2>Thêm giáo trình mới</h2>
+    <p class="text-muted">Điền thông tin vào biểu mẫu bên dưới để thêm giáo trình mới vào hệ thống.</p>
+
+    <form method="post" th:action="@{/books/add}" enctype="multipart/form-data" th:object="${book}">
+        <div class="form-group">
+            <label for="name">Tên giáo trình</label>
+            <input type="text" class="form-control" id="name" name="name" th:field="*{name}" placeholder="Nhập tên giáo trình" required>
+        </div>
+        <div class="form-group">
+            <label for="authors">Tác giả</label>
+            <input type="text" class="form-control" id="authors" name="authors" th:field="*{authors}" placeholder="Nhập tên tác giả" required>
+        </div>
+        <div class="form-group">
+            <label for="introduction">Giới thiệu</label>
+            <textarea class="form-control" id="introduction" name="introduction" th:field="*{introduction}" rows="3" placeholder="Nhập giới thiệu về giáo trình" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="categoryID">Thể loại:</label>
+            <select class="form-control" id="categoryID" name="categoryID" th:field="*{categoryID}">
+                <option value="" disabled selected>Chọn thể loại</option>
+                <!-- Hiển thị danh mục từ danh giáo trình categories -->
+                <th:block th:each="category : ${categories}">
+                    <option th:value="${category.id}" th:text="${category.description}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="contentFile">Nội dung</label>
+            <input type="file" class="form-control-file" th:field="*{contentFile}" id="contentFile" name="contentFile" accept="application/pdf" required>
+        </div>
+        <div class="form-group">
+            <label for="imageFile">Ảnh bìa</label>
+            <input type="file" class="form-control-file" id="imageFile" th:field="*{imageFile}" name="imageFile" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+            <label>Preview ảnh bìa:</label>
+            <div class="image-preview" id="imagePreview">
+                <span>Chưa có ảnh</span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Thêm giáo trình</button>
+        <a href="/books" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+
+<script>
+    // JavaScript để hiển thị preview ảnh
+    const bookImageInput = document.getElementById('imageFile');
+    const imagePreview = document.getElementById('imagePreview');
+
+    bookImageInput.addEventListener('change', function() {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            // Khi file được load xong
+            reader.onload = function(e) {
+                imagePreview.innerHTML = `<img src="${e.target.result}" alt="Ảnh bìa">`;
+            };
+
+            // Đọc file dưới dạng Data URL
+            reader.readAsDataURL(file);
+        } else {
+            // Nếu không có file, hiển thị placeholder
+            imagePreview.innerHTML = `<span>Chưa có ảnh</span>`;
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="navbar">
+  <nav class="navbar navbar-light bg-light px-3">
+    <a class="navbar-brand" th:href="@{/}"><b>EBook</b></a>
+    <div th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}">
+      <!-- Hiển thị thông tin người dùng đã đăng nhập -->
+      <p><span th:text="${#authentication.principal.email}"></span></p>
+    </div>
+
+    <div th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}">
+      <!-- Hiển thị thông tin khi người dùng chưa đăng nhập -->
+      <a th:href="@{/login}" class="btn"><b>Đăng nhập</b></a>
+    </div>
+
+  </nav>
+
+
+</div>
+
+</body>
+</html>

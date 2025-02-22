@@ -1,0 +1,33 @@
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          Keycloak:
+            issuer-uri: http://localhost:8080/realms/file-manager
+            authorization-uri: ${spring.security.oauth2.client.provider.Keycloak.issuer-uri}/protocol/openid-connect/auth
+            jwk-set-uri: ${spring.security.oauth2.client.provider.Keycloak.issuer-uri}/protocol/openid-connect/certs
+            token-uri: ${spring.security.oauth2.client.provider.Keycloak.issuer-uri}/protocol/openid-connect/token
+            user-info-uri: ${spring.security.oauth2.client.provider.Keycloak.issuer-uri}/protocol/openid-connect/userinfo
+
+        registration:
+          Keycloak:
+            client-id: ebook-manager
+            client-secret: aKXit1o30hTXYVPA23b1OT1jCt5KnBDa
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8082/login/oauth2/code/Keycloak
+            scope:
+              - openid
+
+  thymeleaf:
+    cache: false
+
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+
+base-resource-server-uri: http://localhost:9000
+
+server:
+  port: 8082

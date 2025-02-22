@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.4/simplePagination.css"
+          integrity="sha512-emkhkASXU1wKqnSDVZiYpSKjYEPP8RRG2lgIxDFVI4f/twjijBnDItdaRh7j+VRKFs4YzrAcV17JeFqX+3NVig=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <style>
+        /* CSS */
+
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+            margin-bottom: 10px; /* Khoảng cách giữa các card */
+        }
+
+        .book-image {
+            padding: 8px; /* Khoảng cách từ ảnh tới viền */
+            border-radius: 8px; /* Bo góc ảnh */
+            object-fit: cover; /* Đảm bảo ảnh giữ tỷ lệ */
+            max-width: 100%; /* Đảm bảo ảnh không vượt quá kích thước chứa */
+        }
+
+        .row.row-cols-1.g-4 {
+            gap: 4px; /* Khoảng cách giữa các card */
+        }
+
+    </style>
+</head>
+<body>
+
+<div th:replace="component/nav :: navbar"></div>
+
+<!-- Main Content -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar (Categories) -->
+        <div class="col-md-3">
+            <div class="mb-4">
+                <form class="input-group">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm">
+                    <button class="btn btn-secondary" type="submit" id="button-addon2"><i
+                            class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+            <h5>Categories</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3" th:each="category : ${categories}">
+                    <!--/*@thymesVar id="description" type="com.example.ebook.dto.CategoryDTO"*/-->
+                    <a th:href="@{'/categories/' + ${category.id} + '/books'}" class="text-decoration-none" th:text="${category.description}"></a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Book List -->
+
+        <div class="col-md-9">
+            <h4>Kết quả phù hợp</h4>
+            <div class="row row-cols-1 g-4"> <!-- thêm class g-4 để tạo khoảng cách giữa các hàng -->
+                <!-- Book Item -->
+                <div class="col mb-4" th:each="book : ${books}">
+                    <div class="card h-80 p-3"> <!-- thêm padding để tạo khoảng cách bên trong card -->
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                                <img th:src="${book.imagePath}"
+                                     class="img-fluid rounded-start book-image" alt="Book Cover">
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <a class="text-decoration-none" style="color: black" th:href="@{'/books/' + ${book.id}}">
+                                        <h5 class="card-title" th:text="${book.name}">Title</h5>
+                                    </a>
+                                    <p class="card-text"><strong>Tác giả:</strong> <span th:text="${book.authors}"></span></p>
+                                    <p class="card-text">Hệ thống hóa, cập nhật các kiến thức lý luận về dịch vụ Bưu
+                                        chính. Xây dựng hình ảnh khái quát về hoạt động sản xuất - kinh doanh và phát
+                                        triển các dịch vụ Bưu chính của Tổng công ty Bưu chính Viễn thông Việt Nam.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add more book items as needed -->
+                <div id="pagination-container" style=" padding-left: 60%; width: fit-content;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.4/jquery.simplePagination.min.js"
+        integrity="sha512-J4OD+6Nca5l8HwpKlxiZZ5iF79e9sgRGSf0GxLsL1W55HHdg48AEiKCXqvQCNtA1NOMOVrw15DXnVuPpBm2mPg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+
+
+        var perPage = 8; // Số mục trên mỗi trang
+        // Giả sử URL là https://example.com?page=2&sort=asc
+
+// Lấy URL hiện tại
+        const urlParams = new URLSearchParams(window.location.search);
+
+// Lấy tham số "page"
+        const pageParam = urlParams.get('page'); // "2"
+
+        console.log(pageParam)
+
+        var numberOfBooks = [[${numberOfBooks}]];
+
+        // Thiết lập Simple Pagination
+        $('#pagination-container').pagination({
+            hrefTextPrefix: "?page=",
+            items: numberOfBooks,
+            currentPage: pageParam,
+            itemsOnPage: perPage,
+            // cssStyle: 'light-theme',
+
+        });
+    });
+</script>
+</body>
+</html>

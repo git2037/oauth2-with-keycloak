@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.name}">Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+</head>
+<body>
+
+<div th:replace="component/nav :: navbar"></div>
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar (Categories) -->
+        <div class="col-md-3">
+            <div class="mb-4">
+                <form class="input-group">
+                    <input type="text" class="form-control" placeholder="Tìm kiếm">
+                    <button class="btn btn-secondary" type="submit" id="button-addon2"><i
+                            class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+            <h5>Categories</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3" th:each="category : ${categories}">
+                    <!--/*@thymesVar id="description" type="com.example.ebook.dto.CategoryDTO"*/-->
+                    <a th:href="@{'/categories/' + ${category.id} + '/books'}" class="text-decoration-none"
+                       th:text="${category.description}"></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+            <h4 class="fw-bolder text-center" th:text="${book.name}"></h4>
+                <div class="container px-3 px-lg-3 my-3">
+                    <div class="row gx-4 gx-lg-5 align-items-center">
+                        <div class="col-md-12 d-flex justify-content-center">
+<!--                            <iframe th:src="@{'data:application/pdf;base64,' + ${pdfContent}}" width="100%" height="600px"></iframe>-->
+                            <iframe width="70%" height="600px" th:src="${book.contentFilePath}"></iframe>
+                        </div>
+
+                        <a class="btn btn-secondary" style="margin-top: 50px" th:href="${downloadLink}">Download</a>
+                    </div>
+
+                </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

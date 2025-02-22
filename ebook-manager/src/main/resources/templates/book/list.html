@@ -1,0 +1,102 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý giáo trình</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .table-ellipsis {
+            max-width: 200px; /* Đặt kích thước tối đa của ô */
+            white-space: nowrap; /* Không cho phép xuống dòng */
+            overflow: hidden; /* Ẩn nội dung tràn ra ngoài */
+            text-overflow: ellipsis; /* Hiển thị dấu "..." khi nội dung tràn */
+        }
+
+        .col-name {
+            width: 25%; /* Chiếm 25% chiều rộng bảng */
+            font-weight: bold; /* Tô đậm nội dung */
+            text-align: left; /* Canh trái */
+        }
+
+        /* Cột tác giả */
+        .col-author {
+            width: 20%; /* Chiếm 20% chiều rộng bảng */
+            color: #6c757d; /* Đổi màu chữ thành màu xám */
+            text-align: center; /* Canh giữa */
+            font-style: italic; /* In nghiêng */
+        }
+
+        /* Cột giới thiệu */
+        .col-intro {
+            width: 55%; /* Chiếm 55% chiều rộng bảng */
+            white-space: nowrap; /* Không cho phép xuống dòng */
+            overflow: hidden; /* Ẩn nội dung tràn */
+            text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung quá dài */
+            padding-right: 10px; /* Tạo khoảng trống bên phải */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Chèn fragment sidebar -->
+<div th:replace="~{base}"></div>
+
+<!-- Nội dung chính -->
+<div class="container" style="margin-left: 250px; padding-top: 56px;">
+    <h2>Danh sách giáo trình</h2>
+    <p class="text-muted">Tìm kiếm và quản lý các giáo trình trong hệ thống.</p>
+
+    <p th:if="${param.success != null}">
+        <button type="button" class="btn btn-info">Thêm giáo trình thành công</button>
+    </p>
+
+
+
+
+    <!-- Search Box -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Search -->
+        <form method="get" action="/books" class="form-inline">
+            <input type="text" class="form-control mr-2" name="query" placeholder="Tìm kiếm..." aria-label="Search">
+            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        </form>
+        <!-- Add Button -->
+        <a href="/books?action=add" class="btn btn-primary">Thêm giáo trình</a>
+    </div>
+
+    <!-- Book Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-table"></i> Danh sách giáo trình
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="bookTable">
+                    <thead>
+                    <tr>
+                        <th>Tên giáo trình</th>
+                        <th>Tác giả</th>
+                        <th>Giới thiệu</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book : ${books}">
+                        <td class="col-name">
+                            <a th:href="@{'/books/' + ${book.id}}" th:text="${book.name}"></a>
+                        </td>
+                        <td th:text="${book.authors}" class="col-author">Tác giả A</td>
+                        <td th:text="${book.introduction}" class="col-intro table-ellipsis"></td>
+                    </tr>
+                    <!-- Thêm các dòng khác nếu cần -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

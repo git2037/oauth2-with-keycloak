@@ -1,0 +1,19 @@
+<!-- fragments/sidebar.html -->
+<div th:fragment="sidebar">
+    <div class="col-md-3">
+        <div class="mb-4">
+            <form class="input-group">
+                <input type="text" class="form-control" placeholder="Tìm kiếm">
+                <button class="btn btn-secondary" type="submit" id="button-addon2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+        <h5>Categories</h5>
+        <ul class="list-unstyled">
+            <li class="mb-3" th:each="category : ${categories}">
+                <a href="#" class="text-decoration-none" th:text="${category.description}"></a>
+            </li>
+        </ul>
+    </div>
+</div>
